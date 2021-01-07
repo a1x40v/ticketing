@@ -4,6 +4,7 @@ import { OrderStatus } from '@achtickets/common';
 
 import { app } from '../../app';
 import { Order } from '../../models/order';
+import { Payment } from '../../models/payment';
 import { stripe } from '../../stripe';
 
 // jest.mock('../../stripe');
@@ -90,6 +91,13 @@ it('returns a 201 with valid inputs', async () => {
 
   expect(stripeCharge).toBeDefined();
   expect(stripeCharge!.currency).toEqual('usd');
+
+  const payment = await Payment.findOne({
+    orderId: order.id,
+    stripeId: stripeCharge!.id,
+  });
+
+  expect(payment).not.toBeNull();
 });
 
 /*  Для первого способа тестирования, в котором подменяем stripe */
